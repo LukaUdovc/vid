@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 def zmanjsaj_sliko(slika, sirina, visina):
-    pass
+    return cv.resize(slika,(sirina,visina))
 
 def obdelaj_sliko_s_skatlami(slika, sirina_skatle, visina_skatle, barva_koze) -> list: #preveri kje so polja barve koze
     pass
@@ -30,10 +30,10 @@ if __name__ == '__main__':
         if not ret:
             continue
     
-
+        slika = (slika, SIRINA, VISINA) #zmanjsaj sliko
         cv.rectangle(slika, (100, 100), (160, 160), (0, 255, 0), 2) #narisi kvadrat
         cv.putText(slika, "Pritisni 's' za zajem barve koze", (10, 20), #navodila
-        cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+                    cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
         cv.imshow("Zajem barve koze", slika) #prikazi sliko z kvadratom
 
         tipka = cv.waitKey(1) #pocakaj na pritisk gumba
@@ -46,3 +46,13 @@ if __name__ == '__main__':
             exit()
 
     cv.destroyWindow("Zajem barve koze")
+
+     # Glavna zanka
+    while True:
+        start = time.time()
+
+        ret, slika = kamera.read()
+        if not ret:
+            continue
+
+        slika = zmanjsaj_sliko(slika, SIRINA, VISINA)
