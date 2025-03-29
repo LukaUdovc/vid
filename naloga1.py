@@ -13,7 +13,14 @@ def prestej_piklse_z_barvo_koze(slika, barva_koze) -> int:
     pass
 
 def doloci_barvo_koze(slika,levo_zgoraj,desno_spodaj) -> tuple: #določi barvo kože glede na povprečno barvo v kvadratu
-    pass
+    x1, y1 = levo_zgoraj 
+    x2, y2 = desno_spodaj
+    podslika = slika[y1:y2, x1:x2]#izrezek slike kjer naj bi bila koza
+    povprecje = np.mean(podslika.reshape(-1, 3), axis=0)#izracuna povprecje barve koze v kvadratu, vsaka vrstica stevilo pikslov x 3 barvne vrednosti
+    toleranca = 40  # dodatek da pokrije tudi malo svetlejse in temnejse
+    spodnja = np.clip(povprecje - toleranca, 0, 255).astype(np.uint8) #clip uporabljen da vrednosti manjse od min postanejo min/vecje od max postanejo max
+    zgornja = np.clip(povprecje + toleranca, 0, 255).astype(np.uint8)
+    return (spodnja, zgornja) #vrne spodno pa zgorno mejo barve
 
 if __name__ == '__main__':
     kamera = cv.VideoCapture(0)
@@ -38,7 +45,7 @@ if __name__ == '__main__':
 
         tipka = cv.waitKey(1) #pocakaj na pritisk gumba
         if tipka == ord('s'):
-
+            barva_koze = doloci_barvo_koze(slika, (100, 100), (160, 160)) #določi barvo kože z zajemom barve v kvadratu
             break
         elif tipka == 27:  # ESC
             kamera.release()
